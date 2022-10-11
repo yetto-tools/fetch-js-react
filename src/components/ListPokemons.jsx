@@ -11,8 +11,6 @@ export const ListPokemons = ({data, setData, array, setArray}) => {
 
   }
   
-
-
   return (
     <div>
       <h2 onClick={()=>{handleObject()}}>lista</h2>
