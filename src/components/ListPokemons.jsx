@@ -16,12 +16,12 @@ export const ListPokemons = ({data, setData, array, setArray}) => {
       <h2 onClick={()=>{handleObject()}}>lista</h2>
       <ul >
         {
-              info.map( (object) =>{
+            info &&  info.map( (object) =>{
               return (
-                <>
-                <li>pokemon: {object.name}</li>
-                <li>pokemon: {object.url}</li>
-                </>
+                <li>
+                  <span>pokemon: {object.name}</span>
+                  <span>pokemon: {object.url}</span>
+                </li>
                 )
         })
 
