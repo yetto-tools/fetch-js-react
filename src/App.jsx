@@ -1,119 +1,99 @@
-import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
-import './App.css'
-import {Bars} from 'react-loader-spinner'
-import {fetchData, fetchJson, Fetching,getKey} from './config/conection'
+import { useState, useEffect, useTransition, startTransition } from 'react'
 
-import {ListPokemons} from './components/ListPokemons'
-import {ListEmployees} from './components/ListEmployees'
-import FindEmployee from './components/FindEmployee'
-import ListCompanies from './components/ListCombo'
-import { Employee } from './components/Employee'
+import './App.css'
+import {Bars,ThreeDots} from 'react-loader-spinner'
+import {propCapitalize, getKey, dynamicSortMultiple} from './utilities/tools'
+import ListCombo, { ListComboGeneric } from './components/ListCombo'
+
+import { getAllState } from './services/States'
+import { getAllCompanies } from './services/Companies'
+import { getAllEmployees } from './services/Employees'
+import { SeachInput } from './components/SeachInput'
+
 import {CropPicture} from './components/image-crop/index'
-import ListCombo from './components/ListCombo'
-import ListComboStatus from './components/ListComboStatus'
+import { Transition } from '@headlessui/react'
+import { CardEmployee } from './components/CardEmployee'
+import SideBar from './components/SideBar'
 
 function App() {
+  const [statusEmployee, setStatusEmployee] = useState([])
   const [employees, setEmployees] = useState([])
   const [companies, setCompanies] = useState([])
-  const [ready, setReady] = useState(false)
-  const [array, setArray] = useState([])
   const [selectedCompany, setSelectedCompany] = useState([])
   const [selectedStatusEmployee, setSelectedStatusEmployee] = useState([])
-  const [statusEmployee, setStatusEmployee] = useState([])
-  
-  const url = 'https://pokeapi.co/api/v2/'
-  const params = 'pokemon/?offset=100&limit=20'
- 
-//  const urlEmplyee = 'http://localhost:51001/api/v2/empleado?'
-//  const paramsEmployee = '?offset=1&next=50'
 
- const urlBase = 'http://localhost:51001'
- const urlParams = '/Empleado/GetListFillCombosConsulta'
+  const [finding, startTransition] = useTransition()
 
- const urlEmployee = '/Empleado/BuscarEmpleados/?codigoEmpresa=-1&codigoArea=-1&codigoPuesto=-1&codigoEstado=1&btb=0&saldoPrestamo=0'
-
-  useEffect(()=>{
-      fetchJson(urlBase+urlParams).then(data => { 
-        setStatusEmployee(data.listaEstadosEmpleado);
-        setCompanies(data.listaEmpresas); 
-      })
-
-    fetchJson(urlBase+urlEmployee).then(data => { setEmployees(data)})
-      setReady(true)
+  useEffect( () => {
+    Promise.all([getAllState,getAllCompanies,getAllEmployees]).then(([state,companies,employee])=>{
+      propCapitalize(state, 'description')
+      setStatusEmployee(state)
+      setCompanies(companies)
+      employee.sort(dynamicSortMultiple('stateDescription',  'legalNameCompany' , 'fullNamePerson'))
+      setEmployees(employee)
+    }).catch(error => {
+     console.log(error)
+    })
   },[])
   
+  const [result, setResult] = useState('')
+
+  const handleFindEmployee  =  (event) =>{
+    // setQuery(event.target.value)
+    startTransition(()=>{
+    console.log(event.target.value.match(/[\d]+/g))
+
+    if(event.target.value.match(/[\d]+/g) == null ){
+      const filteredPeople =  event.target.value == '' ? employees : employees.filter(
+        (person) => person.fullNamePerson
+        .replace(/\s+/g, ' ')
+        .includes(event.target.value.toUpperCase().replace(/\s+/g, ' ')))
+        setResult(filteredPeople)
+    }
+      else{
+        const filteredPeople =  event.target.value == '' ? employees : employees.filter(
+          (person) => person.codeEmployee
+          .replace(/\w+([-])/g, '')
+          .includes(event.target.value.toUpperCase().replace(/\w+([-])/g, '')))
+          setResult(filteredPeople)
+      }
+    })
+  }
+
   return (
-    <div className="App">
+    <div className="App bg-gradient-to-br from-orange-500/70 via-teal-400/75 to-indigo-500/70 h-screen">
+      <div className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-slate-900/10 dark:border-slate-50/[0.06] bg-white/60 supports-backdrop-blur:bg-white/60 dark:bg-transparent"> 
+        <div className="max-w-8xl mx-auto border-slate-700">
+          <div className="py-4 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 mx-4 lg:mx-0">
+            -
+          </div>
+          <div className="py-4 border-b border-slate-900/10 lg:px-8 lg:border-0 dark:border-slate-300/10 mx-4 lg:mx-0">
+            <div className="relative flex items-center">-</div>
+          </div>
+        </div> 
+      </div>
+      <div className='flex mt-2'>
+        <div className=''>
+          <SideBar></SideBar>
+        </div>
+        <div className='w-full mx-2 rounded bg-opacity-50 blur-xs bg-white/50 backdrop-blur-lg
+          border border-solid border-teal-50/50 border-opacity-50
+        '>
+              <div className='flex justify-center pb-5 
+                border border-solid border-teal-50/50 border-opacity-50 shadow'>
+                <div className='w-1/6'><SeachInput handlerEvent={handleFindEmployee}></SeachInput></div>
+              </div>
+              <div className='text h-96 overflow-auto'>
+                <div className='mt-5'>
+                { 
+                result.length !==0 ?  result.map( (item,idIndex) =>  <CardEmployee item={item} key={idIndex}/>) :null
+  
 
-      <div className="w-full">
-        {/* 
-          <ListPokemons key={getKey()} data={data} setData={setData} array={array} setArray={setArray}  /> 
-        */}
-        
-        <div>
-          
-          {  
-            employees.length == 0 ? (
-              <>
-                <Bars height="120" width="120" color="#3ec4d6" ariaLabel="bars-loading" wrapperStyle={{}} 
-                  wrapperClass="" visible={true} 
-                />
-                <span className=''>Loading...</span>
-              </>
-              )
-              
-            : 
-            <div className="" >
-              {
-                statusEmployee.length > 0  ? 
-                  <div className='flex w-full mt-10'>
-                    <div className='mx-auto w-1/4'>
-                    <FindEmployee 
-                        employees={employees} 
-                        setEmployees={setEmployees}
-                        displayName={'nombreCompleto'}
-                      />
-
-                    </div>
-                    <div className='mx-auto w-1/4'>
-                      <ListCombo 
-                        itemList={companies} 
-                        setReturnSelected={setSelectedCompany} 
-                        displayName={'nombreComercial'} 
-                      />
-                    </div>
-                    <div className='w-1/4 mx-auto'>
-                      <ListCombo  itemList={statusEmployee} 
-                        setReturnSelected={setSelectedStatusEmployee} 
-                        displayName={'estadoEmpleado'} 
-                        />
-                    </div>
-                  </div> 
-                : null
-              }
-              {/* {
-                companies.length !==0  ? 
-                  <div className='w-1/2 top-16'>
-                    <ListCombo key={1} itemList={companies} setReturnSelected={setSelectedCompany} displayName={'nombreComercial'} />
-                  </div> 
-                : null
-              } */}
-         
-              {/* <div className='w-1/2 mx-auto px-5'><FindEmployee employees={employees} /> </div> */}
-            </div>
-            // <div className="fade-in">
-            //   <ListEmployees employees={employees} setEmployees={setEmployees} 
-            //     array={array} setArray={setArray} 
-            //   >
-            //   </ListEmployees>
-            // </div>
-          }
-          
-          
-          {/* <ImageCrop></ImageCrop> */}
-
-          {/* <CropPicture></CropPicture> */}
+                  
+                }    
+                </div>
+              </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,4 @@
-export const getKey = () =>{
-  return Math.random().toString(36).substring(2,36) + Date.now().toString(36).substring(2,36)
-}
-
+export const urlBase = 'http://10.34.1.43:5010/api/v2'
 
 //const info = fetchData((url,params), setData)
 export const  fetchData = async (url, setData ) => {
@@ -13,15 +10,8 @@ export const  fetchData = async (url, setData ) => {
 }
 
 // fetchJson(url+params).then(data => setData(data))
-export const  fetchJson = async (url) => {
-  const response = await fetch(url, {
-    method: 'GET',
-    mode: 'cors',
-    headers: {
-      'Access-Control-Allow-Origin':'http://10.34.1.43:9095/'
-    }
-  })
-
+export const fetchJson = async (url) => {
+  const response = await fetch(url)
   const data = await response.json(); 
   return data
 }

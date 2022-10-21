@@ -2,4 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+    background-color: #f1f1f1;
+    
+}
 
+.scroll-hiden::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
