@@ -13,7 +13,7 @@ export const CardEmployee = ({item}) => {
                 item.codigoEstado == 3 ? 'border-orange-500' :
                 item.codigoEstado == 4 ? 'border-red-500'    : 'text-black'}`}
               >
-                <div className='container bg-yellow-400 opacity-20'><img src={''} width={24} height={42}/></div>
+                <div className='container opacity-20'><img src={''} width={24} height={42}/></div>
               </div>
               <div className=''>
                 <span className='font-semibold text-sm text-gray-800'>{item.codeEmployee}</span>
