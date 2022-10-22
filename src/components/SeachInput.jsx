@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import {FcSearch} from 'react-icons/fc'
 
 
 export const SeachInput =({handlerEvent}) => {
@@ -11,9 +12,10 @@ export const SeachInput =({handlerEvent}) => {
       <div className="relative w-full cursor-default border border-stone-300 overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
         <div className="relative w-full text-gray-400 focus-within:text-gray-600">
           <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
-            <svg className="w-5 h-5 text-gray-400" fill={"currentColor"} viewBox="0 0 20 20">
+            {/* <svg className="w-5 h-5 text-gray-400" fill={"currentColor"} viewBox="0 0 20 20">
               <path fillRule={'evenodd'} clipRule={'evenodd'} d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"></path>
-            </svg>
+            </svg> */}
+                <FcSearch></FcSearch>
           </div>
           <input type="search" id="search_field" autoComplete={'off'}
             className="block w-full h-full py-2 pl-8 pr-3 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 sm:text-sm" 

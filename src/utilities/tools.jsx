@@ -3,13 +3,13 @@ export const getKey = () =>{
 }
 
 export const fromStringToDate = value => {
-    return new Date(value);
+    return new Date(value+'T06:00');
 }
 
 export const fromStringToDateLocalString = (value, 
     options = { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit' }, lang='es-GT'
 ) => {
-    return new Date(value).toLocaleDateString(lang, options);
+    return new Date(value+'T0:00').toLocaleDateString(lang, options);
     
 }
 

@@ -22,6 +22,7 @@ function App() {
   const [companies, setCompanies] = useState([])
   const [selectedCompany, setSelectedCompany] = useState([])
   const [selectedStatusEmployee, setSelectedStatusEmployee] = useState([])
+  const [result, setResult] = useState('')
 
   const [finding, startTransition] = useTransition()
 
@@ -32,12 +33,13 @@ function App() {
       setCompanies(companies)
       employee.sort(dynamicSortMultiple('stateDescription',  'legalNameCompany' , 'fullNamePerson'))
       setEmployees(employee)
+      setResult(employee)
     }).catch(error => {
      console.log(error)
     })
   },[])
   
-  const [result, setResult] = useState('')
+
 
   const handleFindEmployee  =  (event) =>{
     // setQuery(event.target.value)
@@ -77,20 +79,17 @@ function App() {
         <div className=''>
           <SideBar></SideBar>
         </div>
-        <div className='w-full mx-2 rounded bg-opacity-50 blur-xs bg-white/50 backdrop-blur-lg
-          border border-solid border-teal-50/50 border-opacity-50
+        <div className='w-full mx-2 rounded-lg bg-white/40 bg-opacity-20 blur-xs
         '>
-              <div className='flex justify-center pb-5 
-                border border-solid border-teal-50/50 border-opacity-50 shadow'>
+              <div className='flex justify-center pb-5 bg-none rounded-t-lg  border border-solid
+                 bg-white/60 bg-opacity-20 blur-xs shadow
+              '>
                 <div className='w-1/6'><SeachInput handlerEvent={handleFindEmployee}></SeachInput></div>
               </div>
-              <div className='text h-96 overflow-auto'>
-                <div className='mt-5'>
+              <div className='text h-96 overflow-auto bg-white/30'>
+                <div className='mt-5 flex flex-wrap mx-1 '>
                 { 
-                result.length !==0 ?  result.map( (item,idIndex) =>  <CardEmployee item={item} key={idIndex}/>) :null
-  
-
-                  
+                  result.length || finding ? result.map( (item,idIndex) =>  <CardEmployee item={item} key={idIndex}/>) : null
                 }    
                 </div>
               </div>
